@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ana Sayfa</title>
+    <style>
+        /* STILLERIMIZ */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            font-size: 18px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quiz Ana Sayfası</h1>
+    <ul>
+        <li><a href="/quiz/1">Python'da AI Geliştirme</a></li>
+        <li><a href="/quiz/2">Bilgisayar Görüşü</a></li>
+        <li><a href="/quiz/3">NLP (Nöro-dilbilim)</a></li>
+        <li><a href="/quiz/4">Python Uygulamalarında AI Modelleri Uygulama</a></li>
+    </ul>
+    <footer>
+        <p>Developed by {{ developer_name }} 🙂</p>
+    </footer>
+</body>
+</html>

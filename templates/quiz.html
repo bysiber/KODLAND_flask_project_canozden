@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+    <style>
+        /* STILLERIMIZ */
+        body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: #f8f8f8;
+        position: relative; /* scoreboard için gerekli bu */
+        margin: 0; /* Varsayılan margin'i sıfırla */
+        }
+
+        /* Sayfa yüklenirken body'yi gizle ve fade-in animasyonu uygulayalım */
+        body:not(.loaded) {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        }
+
+        body.loaded {
+        opacity: 1;
+        }
+
+        /* Scoreboard stili */
+        .scoreboard {
+        position: fixed;
+        top: 20px;
+        right: 20px; /* Sağa hizalama */
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 1rem;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 10; /* Diğer öğelerin üzerine çıkmasını sağla */
+        }
+
+        /* Başlık stil */
+        h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #333;
+        }
+
+        /* Form stil */
+        #quiz-form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 600px;
+        }
+
+        #quiz-form div {
+        margin-bottom: 1rem;
+        }
+
+        #quiz-form label {
+        margin-bottom: 0.5rem;
+        }
+
+        /* Düğme stil */
+        .button, button[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease; /* Geçiş efekti */
+        text-decoration: none; /* Bağlantı için varsayılan stili kaldır */
+        display: inline-block; /* Yatayda ortalamak için */
+        text-align: center; /* Metni yatayda ortalamak */
+        }
+
+        .button:hover, button[type="submit"]:hover {
+        background-color: #45a049; /* Hover efekti */
+        }
+
+        /* Geri Dön düğmesi stil ve konumlandırma */
+        .back-button {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        }
+
+        /* Sonuç mesajı stil */
+        #result {
+        margin-top: 2rem;
+        font-weight: bold;
+        }
+
+        /* Footer stili */
+        footer {
+        margin-top: 2rem;
+        text-align: center;
+        color: #666;
+        }
+    </style>  
+</head>    
+<body>
+    <div class="scoreboard">
+        <p>Highest Score: <span id="highest-score">{{ highest_score }}</span>%</p>
+        <p>Current Score: <span id="current-score">{{ current_score }}</span>%</p>
+        <p id="result"></p>
+    </div>
+    <div class="back-button">
+        <a href="/" class="button">Go Back</a>
+    </div>
+    <h1>{{ topic }}</h1>
+    <form id="quiz-form">
+        <input type="hidden" name="topic_id" value="{{ topic_id }}">
+        {% for question in questions %}
+            <div>
+                <p>{{ question['soru'] }}</p>
+                <input type="radio" name="{{ question['id'] }}" value="a"> {{ question['cevap_a'] }}<br>
+                <input type="radio" name="{{ question['id'] }}" value="b"> {{ question['cevap_b'] }}<br>
+                <input type="radio" name="{{ question['id'] }}" value="c"> {{ question['cevap_c'] }}<br>
+                <input type="radio" name="{{ question['id'] }}" value="d"> {{ question['cevap_d'] }}<br>
+            </div>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+    <footer>
+        <p>Developed by {{ developer_name }}</p>
+    </footer>
+    <script>
+        const form = document.getElementById('quiz-form');
+        const resultDiv = document.getElementById('result');
+        const highestScoreSpan = document.getElementById('highest-score');
+        const currentScoreSpan = document.getElementById('current-score');
+
+        // Sayfa yüklendiğinde body'e "loaded" sınıfını ekleyelim
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault(); // Sayfa yenilenmesini engelle
+
+            const formData = new FormData(form);
+
+            // AJAX isteği gönder | fetch API kullanıyoruz
+            fetch('/result', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Sonuçları güncelle
+                resultDiv.textContent = `Sonuç: ${data.score} / ${data.total_questions}`;
+                highestScoreSpan.textContent = data.highest_score;
+                currentScoreSpan.textContent = data.percentage_score;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.textContent = 'Bir hata oluştu.';
+            });
+        });
+    </script>
+</body>
+</html>
